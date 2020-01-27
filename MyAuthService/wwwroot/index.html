@@ -17,8 +17,11 @@
         <input type="password" id="passwordLogin" /><br /><br />
         <input type="submit" id="submitLogin" value="Логин" />
     </div>
-    <div>
+    <div id="getData" style="display:none;">
         <input type="submit" id="getDataByLogin" value="Данные по логину" />
+    </div>
+    <div id="loginInfo" style="display:none;">
+        <p>Error: <span id="info"></span></p>
     </div>
 
     <script>
@@ -36,7 +39,7 @@
             // отправляет запрос и получаем ответ
             const response = await fetch("/token", {
                 method: "POST",
-                headers: {"Accept": "application/json"},
+                headers: { "Accept": "application/json" },
                 body: formData
             });
             // получаем данные
@@ -48,13 +51,17 @@
                 // изменяем содержимое и видимость блоков на странице
                 document.getElementById("userName").innerText = data.username;
                 document.getElementById("userInfo").style.display = "block";
+                document.getElementById("getData").style.display = "block";
                 document.getElementById("loginForm").style.display = "none";
+                document.getElementById("loginInfo").style.display = "none";
                 // сохраняем в хранилище sessionStorage токен доступа
                 sessionStorage.setItem(tokenKey, data.access_token);
                 console.log(data.access_token);
-             }
+            }
             else {
                 // если произошла ошибка, из errorText получаем текст ошибки
+                document.getElementById("loginInfo").style.display = "block";
+                document.getElementById("info").innerText = data.errorText;
                 console.log("Error: ", response.status, data.errorText);
             }
         };
